@@ -4,11 +4,12 @@ import {useMemo} from "react";
 import {API_ENDPOINT} from '../config/config';
 import {Backend} from "./Backend";
 
-// import type {AxiosError, AxiosPromise, AxiosResponse} from 'axios';
-
 const backend = axios.create({
 	baseURL: API_ENDPOINT,
 });
+
+// cleans response structure
+backend.interceptors.response.use(response => response.data);
 
 export const useBackend = () => {
 	return useMemo<Backend>(

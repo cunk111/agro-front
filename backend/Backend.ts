@@ -23,7 +23,6 @@ export interface IUser {
 export interface Backend {
 	// TODO
 	// améliorer/vérifier les null cases
-	// vérifier data
 	// vérifier omit des dates aussi ✔
 	// TODO
 
