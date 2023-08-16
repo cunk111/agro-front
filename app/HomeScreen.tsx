@@ -19,7 +19,7 @@ const App = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [posts, setPosts] = useState<IPost[]>([])
 
-		useEffect(() => {
+	useEffect(() => {
 		backend.getAllPosts()
 			.then(data => {
 				if (!data) {
@@ -30,17 +30,7 @@ const App = () => {
 			.finally(() => setIsLoading(false))
 	}, [])
 
-	// return <Stack
-	// 	screenOptions={{
-	// 		headerStyle: {
-	// 			backgroundColor: '#f4511e',
-	// 		},
-	// 		headerTintColor: '#fff',
-	// 		headerTitleStyle: {
-	// 			fontWeight: 'bold',
-	// 		},
-	// 	}}
-	// />;
+
 	return (
 		isLoading
 			? <ActivityIndicator size='large' />
