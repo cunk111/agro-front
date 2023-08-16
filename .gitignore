@@ -37,6 +37,7 @@ yarn-error.*
 # intellij
 vcs.xml
 workspace.xml
+git_toolbox_prj.xml
 
 # package mgmt
 yarn.lock
