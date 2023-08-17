@@ -20,12 +20,12 @@ export interface IUser {
 	email: string;
 }
 
-export interface Backend {
-	// TODO
-	// améliorer/vérifier les null cases
-	// vérifier omit des dates aussi ✔
-	// TODO
+export interface IThread {
+	post: IPost;
+	comments: IComment[];
+}
 
+export interface Backend {
 	// comments
 	getAllComments: () => Promise<IComment[]>,
 	getOneComment:  (id: IComment['id']) => Promise<IComment>,
@@ -40,7 +40,7 @@ export interface Backend {
 	addPost: (data: Omit<IPost, 'id' | 'date'>) => Promise<void>,
 	updatePost: (data: IPost) => Promise<void>,
 	deletePost: (id: IPost['id']) => Promise<void>,
-	getThread: (id: IPost['id']) => Promise<(IPost | IComment)[]>
+	getThread: (id: IPost['id']) => Promise<IThread>
 
 	// users
 	getAllUsers: () => Promise<IUser[]>,

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { Stack } from 'expo-router'
+import { useRouter } from 'expo-router'
 import {
 	ActivityIndicator,
 	Pressable,
@@ -10,12 +10,13 @@ import {
 	View,
 } from 'react-native'
 
-import {useBackend} from "../backend/useBackend"
-import {IPost} from "../backend/Backend"
+import {useBackend} from "../../backend/useBackend"
+import {IPost} from "../../backend/Backend"
 
 const backend = useBackend()
+const router = useRouter()
 
-const App = () => {
+const Posts = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [posts, setPosts] = useState<IPost[]>([])
 
@@ -25,37 +26,37 @@ const App = () => {
 				if (!data) {
 					setPosts([])
 				}
+				console.log('inside useEffect', data)
 				setPosts(data)
 			})
 			.finally(() => setIsLoading(false))
 	}, [])
 
-
 	return (
 		isLoading
-			? <ActivityIndicator size='large' />
+			? <ActivityIndicator size='large'/>
 			: (<SafeAreaView style={styles.container}>
-					<View style={styles.headerContainer}>
-						<Text style={styles.title}>Welcome</Text>
-						<View style={styles.buttonContainer}>
-							<Pressable style={styles.button} onPress={() => alert('You pressed a button.')}>
-								<Text style={styles.buttonLabel}>Press here to create a new post</Text>
-							</Pressable>
-						</View>
+				<View style={styles.headerContainer}>
+					<Text style={styles.title}>Welcome</Text>
+					<View style={styles.buttonContainer}>
+						<Pressable style={styles.button} onPress={() => alert('You pressed a button.')}>
+							<Text style={styles.buttonLabel}>Press here to create a new post</Text>
+						</Pressable>
 					</View>
-						<Text style={styles.label}>or press on this list to enter an existing post</Text>
-					<ScrollView>
-						<View style={styles.scrollViewContent}>
+				</View>
+				<Text style={styles.label}>or press on this list to enter an existing post</Text>
+				<ScrollView>
+					<View style={styles.scrollViewContent}>
 						{posts.map(post => (
 							<View key={post.id} style={styles.listElement}>
-							<Pressable>
-								<Text style={styles.listElementLabel}>{post.title}</Text>
-							</Pressable>
+								<Pressable onPress={() => router.replace(`http://localhost:8081/posts/${post.id.toString()}`)}>
+									<Text style={styles.listElementLabel}>{post.title}</Text>
+								</Pressable>
 							</View>
 						))}
-						</View>
-					</ScrollView>
-				</SafeAreaView>)
+					</View>
+				</ScrollView>
+			</SafeAreaView>)
 	)
 }
 
@@ -128,4 +129,4 @@ const styles= StyleSheet.create({
 	}
 })
 
-export default App
+export default Posts
