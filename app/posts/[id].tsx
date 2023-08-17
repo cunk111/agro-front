@@ -13,6 +13,7 @@ import {
 
 import {useBackend} from "../../backend/useBackend"
 import {IThread} from "../../backend/Backend"
+import {nukeSearchParam} from "../../utils/nukeSearchParam";
 
 const backend = useBackend()
 
@@ -24,6 +25,7 @@ const Thread = () => {
 
 	// how ugly is that
 	useEffect(() => {
+		// id is whether a string or a string[], but we need a number 😬
 		let arg
 		if(Array.isArray(id)) {
 			arg = id.pop()
@@ -40,30 +42,35 @@ const Thread = () => {
 	}
 
 	const handleSubmit = () => {
+		const arg = nukeSearchParam(id)
 		const payload = {
-				content: form,
-				owner: 906524522143, // TODO
-				parent: parseInt(JSON.stringify(id), 10),
+			content: form,
+			owner: 906524522143, // TODO
+			parent: arg,
 		}
-		console.log('payload', payload)
-		console.log('rhaaaaaa', id)
-		backend.addComment(payload)
+
+		// call hook again to reset view
+		backend.addComment(payload).then(() => backend
+			.getThread(arg.toString())
+			.then(data => setThread(data))
+		)
 	}
 
+	console.log('thread', thread)
 	if (typeof thread === 'object') {
 		return (
 			<SafeAreaView style={styles.container}>
 				<View style={styles.headerContainer}>
 				<Text style={styles.title}>{thread?.post.title}</Text>
 				toto
-				{/*{thread?.comments.map(comment => {*/}
-				{/*	return (*/}
-				{/*		<View style={styles.buttonContainer} key={comment.id}>*/}
-				{/*			<Text style={styles.comment}>{comment.content}</Text>*/}
-				{/*			<Text style={styles.date}>{(comment.date)}</Text>*/}
-				{/*		</View>*/}
-				{/*	)*/}
-				{/*})}*/}
+				{thread?.comments.map(comment => {
+					return (
+						<View style={styles.buttonContainer} key={comment.id}>
+							<Text style={styles.comment}>{comment.content}</Text>
+							<Text style={styles.date}>{(comment.date)}</Text>
+						</View>
+					)
+				})}
 				<TextInput
 					style={styles.textInput}
 					onChangeText={text => handleTextChange(text)}
