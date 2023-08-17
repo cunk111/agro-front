@@ -40,7 +40,7 @@ export interface Backend {
 	addPost: (data: Omit<IPost, 'id' | 'date'>) => Promise<void>,
 	updatePost: (data: IPost) => Promise<void>,
 	deletePost: (id: IPost['id']) => Promise<void>,
-	getThread: (id: IPost['id']) => Promise<IThread>
+	getThread: (id: string) => Promise<IThread>
 
 	// users
 	getAllUsers: () => Promise<IUser[]>,
