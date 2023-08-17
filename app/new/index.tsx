@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 import {useBackend} from "../../backend/useBackend"
-import {IPost} from "../../backend/Backend"
+import {router} from "expo-router";
 
 const backend = useBackend()
 
@@ -19,21 +19,7 @@ type Form = {
 }
 
 const NewPost = () => {
-	const [isLoading, setIsLoading] = useState<boolean>(true)
-	const [posts, setPosts] = useState<IPost[]>([])
 	const [form, setForm] = useState<Form>({title: '', details: ''})
-
-	useEffect(() => {
-		backend.getAllPosts()
-			.then(data => {
-				if (!data) {
-					setPosts([])
-				}
-				console.log('inside useEffect', data)
-				setPosts(data)
-			})
-			.finally(() => setIsLoading(false))
-	}, [])
 
 const handleChangeTitle = (title: string) => {
 	setForm({
@@ -50,32 +36,31 @@ const handleChangeTitle = (title: string) => {
 	}
 
 	const handleSubmit = () => {
-		backend.addPost({...form, owner: 906524522143})
+		backend.addPost({...form, owner: 906524522143}).then(() => {
+			router.push('http://localhost:8081/posts')
+		})
 	}
 
 	return (
-		isLoading
-			? <ActivityIndicator size='large'/>
-			: (<SafeAreaView style={styles.container}>
-				<View style={styles.headerContainer}>
-					<Text style={styles.title}>Create a post</Text>
-						<Text style={styles.label}>title</Text>
-						<TextInput
-							style={styles.textInput}
-							onChangeText={text => handleChangeTitle(text)}
-						/>
-						<Text style={styles.label}>details</Text>
-						<TextInput
-							style={styles.textInput}
-							onChangeText={text => handleChangeDetails(text)}
-						/>
-						<Button
-							title='Publier'
-							onPress={handleSubmit}
-						></Button>
-				</View>
-			</SafeAreaView>)
-	)
+		<SafeAreaView style={styles.container}>
+			<View style={styles.headerContainer}>
+				<Text style={styles.title}>Create a post</Text>
+					<Text style={styles.label}>title</Text>
+					<TextInput
+						style={styles.textInput}
+						onChangeText={text => handleChangeTitle(text)}
+					/>
+					<Text style={styles.label}>details</Text>
+					<TextInput
+						style={styles.textInput}
+						onChangeText={text => handleChangeDetails(text)}
+					/>
+					<Button
+						title='Publier'
+						onPress={handleSubmit}
+					></Button>
+			</View>
+		</SafeAreaView>)
 }
 
 const styles= StyleSheet.create({

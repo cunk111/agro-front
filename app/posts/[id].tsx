@@ -62,7 +62,6 @@ const Thread = () => {
 			<SafeAreaView style={styles.container}>
 				<View style={styles.headerContainer}>
 				<Text style={styles.title}>{thread?.post.title}</Text>
-				toto
 				{thread?.comments.map(comment => {
 					return (
 						<View style={styles.buttonContainer} key={comment.id}>
