@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import { useRouter } from 'expo-router'
 import {
-	ActivityIndicator,
-	Pressable,
+	ActivityIndicator, Button,
 	SafeAreaView,
-	ScrollView,
+	// ScrollView,
 	StyleSheet,
-	Text,
+	Text, TextInput,
 	View,
 } from 'react-native'
 
@@ -14,11 +12,16 @@ import {useBackend} from "../../backend/useBackend"
 import {IPost} from "../../backend/Backend"
 
 const backend = useBackend()
-const router = useRouter()
 
-const Posts = () => {
+type Form = {
+	title: string;
+	details: string;
+}
+
+const NewPost = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [posts, setPosts] = useState<IPost[]>([])
+	const [form, setForm] = useState<Form>({title: '', details: ''})
 
 	useEffect(() => {
 		backend.getAllPosts()
@@ -32,30 +35,45 @@ const Posts = () => {
 			.finally(() => setIsLoading(false))
 	}, [])
 
+const handleChangeTitle = (title: string) => {
+	setForm({
+		...form,
+		title
+	})
+}
+
+	const handleChangeDetails = (details: string) => {
+		setForm({
+			...form,
+			details
+		})
+	}
+
+	const handleSubmit = () => {
+		backend.addPost({...form, owner: 906524522143})
+	}
+
 	return (
 		isLoading
 			? <ActivityIndicator size='large'/>
 			: (<SafeAreaView style={styles.container}>
 				<View style={styles.headerContainer}>
-					<Text style={styles.title}>Welcome</Text>
-					<View style={styles.buttonContainer}>
-						<Pressable style={styles.button} onPress={() => router.replace('http://localhost:8081/new')}>
-							<Text style={styles.buttonLabel}>Press here to create a new post</Text>
-						</Pressable>
-					</View>
+					<Text style={styles.title}>Create a post</Text>
+						<Text style={styles.label}>title</Text>
+						<TextInput
+							style={styles.textInput}
+							onChangeText={text => handleChangeTitle(text)}
+						/>
+						<Text style={styles.label}>details</Text>
+						<TextInput
+							style={styles.textInput}
+							onChangeText={text => handleChangeDetails(text)}
+						/>
+						<Button
+							title='Publier'
+							onPress={handleSubmit}
+						></Button>
 				</View>
-				<Text style={styles.label}>or press on this list to enter an existing post</Text>
-				<ScrollView>
-					<View style={styles.scrollViewContent}>
-						{posts.map(post => (
-							<View key={post.id} style={styles.listElement}>
-								<Pressable onPress={() => router.replace(`http://localhost:8081/posts/${post.id.toString()}`)}>
-									<Text style={styles.listElementLabel}>{post.title}</Text>
-								</Pressable>
-							</View>
-						))}
-					</View>
-				</ScrollView>
 			</SafeAreaView>)
 	)
 }
@@ -72,7 +90,7 @@ const styles= StyleSheet.create({
 	},
 	title: {
 		fontSize: 64,
-		marginBottom: 34,
+		marginBottom: 64,
 		color: '#FFFFFF',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -126,7 +144,14 @@ const styles= StyleSheet.create({
 		color: '#FFFFFF',
 		borderBottomColor: '#888888',
 		fontSize: 24,
-	}
+	},
+	textInput: {
+		backgroundColor: "#FFFFFF",
+		height: 40,
+		margin: 12,
+		borderWidth: 1,
+		padding: 10,
+	},
 })
 
-export default Posts
+export default NewPost
